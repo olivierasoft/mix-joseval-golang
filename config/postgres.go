@@ -1,13 +1,18 @@
 package config
 
 import (
+	"os"
+
 	"github.com/olivierasoft/mix-joseval-golang.git/schemas"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 func InitializePostgres() (*gorm.DB, error) {
-	db, err := gorm.Open(postgres.Open("postgresql://postgres:@@mix@@@localhost:5432/mix"), &gorm.Config{})
+
+	DATABASE_URL := os.Getenv("DATABASE_URL")
+
+	db, err := gorm.Open(postgres.Open(DATABASE_URL), &gorm.Config{})
 
 	if err != nil {
 		return nil, err

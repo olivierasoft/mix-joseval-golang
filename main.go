@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/olivierasoft/mix-joseval-golang.git/config"
@@ -10,10 +9,14 @@ import (
 
 func init() {
 
-	envErr := config.ReadEnvironmentFile()
+	isProduction := os.Getenv("production")
 
-	if envErr != nil {
-		panic(envErr)
+	if isProduction == "" {
+		envErr := config.ReadEnvironmentFile()
+
+		if envErr != nil {
+			panic(envErr)
+		}
 	}
 
 	configErr := config.Init()
@@ -24,8 +27,5 @@ func init() {
 }
 
 func main() {
-
-	fmt.Println(os.Getenv("DISCORD_SECRET"))
-
 	router.Initialize()
 }

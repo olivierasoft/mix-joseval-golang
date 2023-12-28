@@ -1,6 +1,7 @@
 package config
 
 import (
+	"bufio"
 	"os"
 	"strings"
 
@@ -8,22 +9,29 @@ import (
 )
 
 func ReadEnvironmentFile() (err error) {
-	bytes, err := os.ReadFile(".env")
+	file, err := os.Open(".env")
 
 	if err != nil {
 		panic(err)
 	}
 
-	environmentSplit := strings.Split(string(bytes), "=")
+	fileScanner := bufio.NewScanner(file)
 
-	if len(environmentSplit)%2 != 0 {
-		return &schemas.Error{
-			Message: "Environment file in wrong format.",
+	fileScanner.Split(bufio.ScanLines)
+
+	for fileScanner.Scan() {
+		environmentSplit := strings.Split(fileScanner.Text(), "=")
+
+		if len(environmentSplit)%2 != 0 {
+			return &schemas.Error{
+				Message: "Environment file in wrong format.",
+			}
 		}
-	}
 
-	for i := 0; i < len(environmentSplit); i += 2 {
-		os.Setenv(environmentSplit[i], environmentSplit[i+1])
+		for i := 0; i < len(environmentSplit); i += 2 {
+			os.Setenv(environmentSplit[i], environmentSplit[i+1])
+		}
+
 	}
 
 	return nil
