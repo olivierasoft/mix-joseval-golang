@@ -1,18 +1,23 @@
 package config
 
-import "gorm.io/gorm"
+import (
+	"os"
 
-var db *gorm.DB
+	"github.com/olivierasoft/mix-joseval-golang.git/internal/domain/entity"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+)
 
-func Init() error {
-
-	postgres, err := InitializePostgres()
+func GenDatabaseInstance() (instance *gorm.DB, err error) {
+	db, err := gorm.Open(postgres.Open(os.Getenv("DATABASE_URL")), &gorm.Config{})
 
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	db = postgres
+	return db, nil
+}
 
-	return nil
+func AddMigrations(db *gorm.DB) {
+	db.AutoMigrate(&entity.User{}, &entity.DiscordConnection{}, &entity.DiscordGuild{})
 }
