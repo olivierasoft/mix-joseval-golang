@@ -19,5 +19,10 @@ func GenDatabaseInstance() (instance *gorm.DB, err error) {
 }
 
 func AddMigrations(db *gorm.DB) {
-	db.AutoMigrate(&entity.User{}, &entity.DiscordConnection{}, &entity.DiscordGuild{})
+	db.AutoMigrate(
+		&entity.User{},
+		&entity.DiscordConnection{},
+		&entity.DiscordGuild{},
+		&entity.DiscordAuth{},
+	)
 }

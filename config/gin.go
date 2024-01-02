@@ -16,7 +16,7 @@ func BootstrapGinFramework() {
 func configureRouter(g *gin.Engine) {
 	auth := g.Group("/api/authentication")
 	{
-		auth.POST("/login", controller.OAuthEntry)
+		auth.POST("/login", controller.Login)
 	}
 
 }

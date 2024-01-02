@@ -16,4 +16,5 @@ type User struct {
 	CreatedAt          time.Time `gorm:"autoCreateTime"`
 	DiscordGuilds      []DiscordGuild
 	DiscordConnections []DiscordConnection
+	DiscordAuths       []DiscordAuth
 }
