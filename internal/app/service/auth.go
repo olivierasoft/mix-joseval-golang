@@ -121,6 +121,31 @@ func Login(code string) (token *string, err error) {
 		return nil, err
 	}
 
+	databaseUser := entity.User{
+		Username:      userInformation.User.Username,
+		Discriminator: userInformation.User.Discriminator,
+	}
+
+	DatabaseClient.Model(&databaseUser).First(&databaseUser)
+
+	if databaseUser.Id != 0 {
+
+		jwt := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
+			"Name":      databaseUser.GlobalName,
+			"Username":  databaseUser.Username,
+			"ExpiresAt": jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+			"IssuedAt":  jwt.NewNumericDate(time.Now()),
+		})
+
+		signedString, err := jwt.SignedString([]byte(os.Getenv("JWT_SECRET")))
+
+		if err != nil {
+			return nil, err
+		}
+
+		return &signedString, nil
+	}
+
 	user := entity.User{
 		Username:      userInformation.User.Username,
 		Avatar:        userInformation.User.Avatar,
